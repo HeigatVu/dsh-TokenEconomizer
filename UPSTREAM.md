@@ -44,6 +44,26 @@ git remote set-url upstream /new/path/to/TokenEconomizer
 git remote set-url upstream https://github.com/microsoft/TokenEconomizer.git
 ```
 
+### At pull time
+
+Your clone has a local alias that pulls **and** reports the port drift in one step:
+
+```bash
+cd /home/ducvu/Heigat-home/project/TokenEconomizer
+git sync          # = git pull --ff-only && node .../dsh-tokeneconomizer/upstream.mjs
+```
+
+A plain `git pull` does **not** update this plugin — nothing does automatically. The
+alias only tells you what needs porting; the porting is still a human read of the diff.
+(An automatic reminder via `post-merge` is not possible here: this machine sets
+`core.hooksPath=~/.codex/git-hooks` globally, so per-repo `.git/hooks/` never runs.)
+
+If the alias is lost (clone re-created), restore it:
+
+```bash
+git config --local alias.sync '!git pull --ff-only && node /home/ducvu/.dsh/plugins/dsh-tokeneconomizer/upstream.mjs'
+```
+
 ## The update loop
 
 ```bash

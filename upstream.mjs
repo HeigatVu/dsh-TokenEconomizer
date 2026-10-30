@@ -9,6 +9,11 @@
 // merge it, never base a branch on it — this port shares no history with it.
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
+// Every git call runs against THIS repository, not against whatever directory the
+// caller happens to be in: `git sync` is invoked from inside the upstream clone.
+const REPO = fileURLToPath(new URL('.', import.meta.url))
 
 const REMOTE = process.env.TE_UPSTREAM_REMOTE ?? 'upstream'
 // The four mechanisms this port tracks. Everything else upstream (host adapters,
@@ -22,7 +27,11 @@ const PATHS = [
 
 const baseline = readFileSync(new URL('./.upstream-baseline', import.meta.url), 'utf8').trim().split(/\s+/)[0]
 const git = (...args) =>
-  execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+  execFileSync('git', args, {
+    cwd: REPO,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim()
 const tryGit = (...args) => {
   try {
     return git(...args)

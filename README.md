@@ -149,7 +149,8 @@ state file is a cold start.
 
 ```bash
 npm run check   # syntax-check every module
-npm test        # thresholds, signatures, pruning rules, guard behaviour
+npm test          # thresholds, signatures, pruning rules, guard behaviour
+npm run upstream:diff  # did the mechanism we ported move upstream?
 ```
 
 [`UPSTREAM.md`](./UPSTREAM.md) holds the port map, the upstream sync loop, and the

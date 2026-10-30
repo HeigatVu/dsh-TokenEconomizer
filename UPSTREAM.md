@@ -22,26 +22,39 @@ DSH's typed extension points, so an upstream commit never applies mechanically �
 | `toolprune/codex.py`, `loopguard/shell_edits.py` | — | Codex/Claude-specific, not ported |
 | `repomap*.py` | — | no DSH equivalent yet |
 
+## How upstream is wired
+
+Upstream is a **git remote of this repository**, not a separate clone you have to
+remember to keep around:
+
+```bash
+git remote -v
+# upstream  /home/ducvu/Heigat-home/project/TokenEconomizer (fetch)
+```
+
+It points at your own clone of `microsoft/TokenEconomizer`, so `git fetch` needs no
+network and follows exactly what you pulled. It is a **read-only source of commits**:
+this port shares no history with it, so never merge, rebase or branch from it — read
+diffs only.
+
+Repoint it if the clone moves, or use GitHub when the clone is not on disk:
+
+```bash
+git remote set-url upstream /new/path/to/TokenEconomizer
+git remote set-url upstream https://github.com/microsoft/TokenEconomizer.git
+```
+
 ## The update loop
 
 ```bash
-UP=/home/ducvu/.dsh/.tmp/TokenEconomizer
-
-# 1. Refresh the scratch clone (re-clone if it is gone)
-git -C "$UP" pull --ff-only
-#    git clone https://github.com/microsoft/TokenEconomizer.git "$UP"
-
-# 2. Did any mechanism actually move? This is the only question that matters.
-git -C "$UP" diff --stat 1deb887..origin/main -- \
-  tokeneconomizer/plugin/config.py tokeneconomizer/microskills \
-  tokeneconomizer/toolprune tokeneconomizer/loopguard
-
-# 3. Read the hunks that matter
-git -C "$UP" diff 1deb887..origin/main -- tokeneconomizer/plugin/config.py
-git -C "$UP" diff 1deb887..origin/main -- tokeneconomizer/toolprune
-git -C "$UP" diff 1deb887..origin/main -- tokeneconomizer/loopguard/rules.py
-git -C "$UP" diff 1deb887..origin/main -- tokeneconomizer/microskills/envfacts.py
+npm run upstream:diff             # what changed: stat + commit log
+npm run upstream:diff -- --full   # the whole patch
 ```
+
+That one command is steps 1 and 2 of the old procedure: it fetches `upstream`, diffs
+`.upstream-baseline..upstream/main` over the four ported paths only, and prints
+`Up to date` when nothing moved. The baseline sha lives in `.upstream-baseline` — the
+only place to change it.
 
 Then port **in this order**, because each one outranks the next when they disagree:
 
@@ -55,11 +68,10 @@ Then:
 
 ```bash
 npm run check && npm test
-# bump the baseline sha at the top of this file
+printf '%s\n' <new-upstream-sha> > .upstream-baseline
 git commit -am "sync upstream <new-sha>" && git push
+npm run upstream:diff   # must now print: Up to date
 ```
-
-Finally re-run step 2 against the new sha and confirm the output is empty.
 
 **Do not port anything under `tokeneconomizer/plugin/` except `config.py`.** That
 directory is the host-adapter layer this port replaces by construction. `trace/` and

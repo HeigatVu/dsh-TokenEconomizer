@@ -28,7 +28,8 @@
   },
   "scripts": {
     "check": "for f in *.mjs; do node --check \"$f\" || exit 1; done",
-    "test": "node --test *.test.mjs"
+    "test": "node --test *.test.mjs",
+    "upstream:diff": "node upstream.mjs"
   },
   "engines": {
     "node": "^22.19.0 || >=24",

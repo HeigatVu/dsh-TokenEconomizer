@@ -152,6 +152,9 @@ npm run check   # syntax-check every module
 npm test        # thresholds, signatures, pruning rules, guard behaviour
 ```
 
+[`UPSTREAM.md`](./UPSTREAM.md) holds the port map, the upstream sync loop, and the
+drift ledger — start there before porting any upstream change.
+
 ## License and credit
 
 MIT for this port. The mechanisms, thresholds and paper are Microsoft's:

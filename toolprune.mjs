@@ -21,8 +21,18 @@ export function planPrune(state, catalog, config) {
     return { deny: [], decisions: [], sessions: sessions.length };
   }
 
+  // Upstream only ever considers a tool the repository has never called: a tool
+  // that worked once is part of the workflow, however long ago that was.
+  const everUsed = new Set();
+  for (const session of state?.sessions ?? []) {
+    for (const [name, count] of Object.entries(session?.tools ?? {})) {
+      if (Number(count) > 0) everUsed.add(name);
+    }
+  }
+
   const decisions = [];
   for (const name of names) {
+    if (everUsed.has(name)) continue;
     let unusedSessions = 0;
     let unusedPrompts = 0;
     for (const session of sessions) {

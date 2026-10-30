@@ -74,6 +74,24 @@ test("tool pruning needs sessions of evidence and never touches a used tool", ()
   assert.deepEqual(planPrune(thin, ["bash"], config).deny, []);
 });
 
+test("a tool the repository called once is never pruned, however long the window", () => {
+  const config = resolveConfig({}, {});
+  const state = emptyState("/repo");
+  const early = newSessionRecord("old");
+  early.prompts = 1;
+  early.tools = { present: 1 };
+  state.sessions.push(early);
+  for (let i = 0; i < 5; i += 1) {
+    const session = newSessionRecord(`s${i}`);
+    session.prompts = 3;
+    session.tools = { bash: 2 };
+    state.sessions.push(session);
+  }
+  // `present` has been unused for five sessions, but it did work once: upstream
+  // keeps it, and so does this port.
+  assert.deepEqual(planPrune(state, ["bash", "present"], config).deny, []);
+});
+
 test("loop guard redirects once on a repeated failure, then stops", () => {
   const config = resolveConfig({}, {});
   const turn = newTurn();

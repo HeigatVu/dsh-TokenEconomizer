@@ -11,10 +11,10 @@
 
 /** Sessions a signature must appear in before it counts as a repo fact. */
 export const CONFIRM_SESSIONS = 2;
-/** Facts worth spending context on in one session. */
-export const MAX_FACTS = 5;
+/** Caps matching upstream `microskills_max_facts` / `microskills_max_tokens`. */
+export const MAX_FACTS = 4;
 const MAX_TEXT = 200;
-const MAX_RENDERED = 900;
+const MAX_RENDERED = 600;
 
 /**
  * Collapse a failure to its shape: identifiers, numbers and paths differ

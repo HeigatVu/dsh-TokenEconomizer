@@ -1,0 +1,48 @@
+{
+  "name": "@ducvu/dsh-tokeneconomizer-plugin",
+  "version": "0.1.0",
+  "description": "TokenEconomizer for DeepSeek Harness: micro-skills learned across sessions, evidence-gated tool pruning, and a failure-loop guard for the agent loop",
+  "icon": "./icon.svg",
+  "type": "module",
+  "main": "index.mjs",
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "icon.svg",
+    "index.mjs",
+    "config.mjs",
+    "store.mjs",
+    "microskills.mjs",
+    "toolprune.mjs",
+    "loopguard.mjs",
+    "cordis.patch.yml",
+    "plugin.test.mjs"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "check": "for f in *.mjs; do node --check \"$f\" || exit 1; done",
+    "test": "node --test *.test.mjs"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24",
+    "dsh": ">=0.2.1-rc.1 <0.3.0"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "tokeneconomizer",
+    "cost",
+    "tokens",
+    "microskills",
+    "toolprune",
+    "loopguard"
+  ],
+  "license": "MIT"
+}

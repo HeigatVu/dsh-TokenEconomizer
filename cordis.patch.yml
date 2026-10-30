@@ -1,0 +1,6 @@
+# Profile patch for @ducvu/dsh-tokeneconomizer-plugin.
+# A top-level YAML array of loader patch entries; `install_bundle` writes the
+# profile's copy. Configure the plugin through the entry's `config` block.
+- insert:
+    - id: dsh-tokeneconomizer
+      name: '@ducvu/dsh-tokeneconomizer-plugin'

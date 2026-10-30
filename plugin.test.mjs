@@ -22,6 +22,13 @@ test("config keeps defaults and clamps bad values", () => {
   assert.equal(resolveConfig({}, { TE_TOOLPRUNE: "propose" }).toolprune, "propose");
 });
 
+test("TE_DISABLE is a kill switch, not a default", () => {
+  // A config block that says enabled: true must not outrun the environment switch,
+  // or a user with a stuck session has no way out.
+  assert.equal(resolveConfig({ enabled: true }, { TE_DISABLE: "1" }).enabled, false);
+  assert.equal(resolveConfig({}, {}).enabled, true);
+});
+
 test("repo keys separate directories and stay stable", () => {
   const a = repoKey(process.cwd());
   const b = repoKey(process.cwd());

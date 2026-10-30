@@ -124,6 +124,10 @@ export function resolveConfig(input = {}, env = process.env) {
     }
   }
 
+  // `TE_DISABLE` is a kill switch, not a default: it must survive a config block
+  // that says `enabled: true`, or a stuck user has no way out from the environment.
+  if (env.TE_DISABLE === "1" || env.TE_DISABLE === "true") config.enabled = false;
+
   // A backstop multiplier below 1 would fire on every turn.
   if (config.loopguard_backstop_mult < 1) config.loopguard_backstop_mult = DEFAULTS.loopguard_backstop_mult;
   return Object.freeze(config);

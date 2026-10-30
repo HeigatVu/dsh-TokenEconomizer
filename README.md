@@ -75,12 +75,17 @@ fresh repository is never judged against a guess. Default: **on**.
 
 ## Install
 
+From a shell:
+
 ```bash
-dsh plugin install /path/to/dsh-TokenEconomizer
+dsh plugin --profile web add /path/to/dsh-TokenEconomizer
 ```
 
-or, inside a DSH session, `plugin_manager` with action `install_bundle` and the
-package directory. The bundle patch mounts one entry:
+or from inside a DSH session, `plugin_manager` with action `install_bundle` and
+the package directory as target. Either way the change lands on the next DSH
+restart, because a new bundle rewrites the profile's bundle list.
+
+The bundle patch mounts one entry:
 
 ```yaml
 - insert:
